@@ -5,7 +5,6 @@ This Discord Bot allows for creation of teams between players in a discord serve
 Show all commands.<br/>
 {} shows a command parameter is optional.<br/>
 ```
-=== Commands List ===
 teams								Help menu
 teams create [team name]    					Create a new team
 teams invite [user]						Add a user to the user's current team
