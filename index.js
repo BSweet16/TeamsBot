@@ -68,7 +68,7 @@ function showCommands (givenMessage){
 	var helpMenu = {
 		"content": "**Help Menu**",
 		"embed": {
-			"description": "__List of commands with descriptions__ \nNote: Team names are not allowed to have spaces at this time.\n[] are not required when typing the command.\n{} are not required when typing the command, and are optional to include in the command.",
+			"description": "__List of commands with descriptions__ \nIt is not required to type [] or {}. In [content], [] are not required but content is required when typing the command.\nThe same applies for these brackets, however {content} is optional to include in the command.",
 			"color": 160860,
 			"fields": [
 				{
@@ -78,7 +78,7 @@ function showCommands (givenMessage){
 				},
 				{
 					"name": "Teams create [team name]",
-					"value": "Create a new team. The Team name must be one word.",
+					"value": "Create a new team. The Team name must be one word with no spaces.",
 					"inline": false
 				},
 				{
@@ -773,7 +773,11 @@ client.on('message', message =>{
 					foundRoster = findUserRoster(message.author.tag);
 				}
 				else if (messageArray.length == 3){ // Display a roster by searching
-					foundRoster = listroster(messageArray[2]); 
+					foundRoster = listroster(messageArray[2]);
+					if (foundRoster.length != 0){
+						foundRoster = foundRoster.split('\n'); 
+					}
+					else{foundRoster = ""; message.channel.send("Unable to find " + messageArray[2]);}
 				}
 				
 				// Display team roster
