@@ -27,6 +27,7 @@ var teamNamesList = [];		// A list of all the names of teams
 		- Add case for tie scores
 		- Add play message sent
 		- Deny a score
+	- Issue viewing points for team that doesnt exist.
 	
 	Extra Incoming features
 	- Create roles of a team
@@ -908,7 +909,7 @@ client.on('message', message =>{
 			}
 			else if (messageArray.length == 3){
 				var teamPoints = getPoints(messageArray[2]);
-				message.channel.send("**" + messageArray[2] + "** currently has **" + teamPoints + "**.");
+				message.channel.send("**" + messageArray[2] + "** currently has **" + teamPoints + "** points.");
 			}
 			else{
 
