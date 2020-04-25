@@ -102,11 +102,6 @@ function showCommands (givenMessage){
 					"inline": false
 				},
 				{
-					"name": "Teams create [team name]",
-					"value": "Create a new team.",
-					"inline": false
-				},
-				{
 					"name": "Teams points {team name}",
 					"value": "View the points of your team. \nYou may also add a {team name} to check the points of another team.",
 					"inline": false
