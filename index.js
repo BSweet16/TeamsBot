@@ -577,16 +577,12 @@ function addMemberToTeamChannels(givenMessageObject, teamName, userToAdd){
  */
 function removeMemberFromTeamChannels(givenMessageObject, teamName, userToRemove){
 	var serverChannels = givenMessageObject.guild.channels.cache;
-	var teamCategoryChannel;
 	serverChannels.forEach(currChannel => { // Find team category channel
 		if (currChannel.type == "category" && currChannel.name.toUpperCase() == teamName.toUpperCase()){
-			teamCategoryChannel = currChannel;
+			currChannel.permissionOverwrites.get(userToRemove.id).delete(); // Remove user from category channel. Assume children are synced
 		}
 	})
-	if (teamCategoryChannel){ // Remove user from category channel. Assume children are synced
-		teamCategoryChannel.permissionOverwrites.get(userToRemove).delete();
-	}
-	else{console.log("removeMemberFromTeamChannels: Unable to find teamCategoryChannel.");}
+	//console.log("removeMemberFromTeamChannels: Unable to find teamCategoryChannel.");
 }
 /** Remove all team channels from the server. Used during a team deletion.
  * @param givenMessageObject - The message object that was sent to activate the command.
