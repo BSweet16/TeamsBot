@@ -68,7 +68,7 @@ function showCommands (givenMessage){
 	var helpMenu = {
 		"content": "**Help Menu**",
 		"embed": {
-			"description": "__List of commands with descriptions__ \nNote: Team names are not allowed to have spaces at this time.",
+			"description": "__List of commands with descriptions__ \nNote: Team names are not allowed to have spaces at this time.\n[] are not required when typing the command.\n{} are not required when typing the command, and are optional to include in the command.",
 			"color": 160860,
 			"fields": [
 				{
