@@ -78,11 +78,6 @@ function showCommands (givenMessage){
 				},
 				{
 					"name": "Teams create [team name]",
-					"value": "Create a new team.",
-					"inline": false
-				},
-				{
-					"name": "Teams create [team name]",
 					"value": "Create a new team. The Team name must be one word.",
 					"inline": false
 				},
@@ -118,7 +113,7 @@ function showCommands (givenMessage){
 				},
 				{
 					"name": "Teams top {number}",
-					"value": "View the top 5 teams.\nYou may also enter how many top teams to view an ammount different than 5.",
+					"value": "View the top 5 teams.\nYou may also enter how many top teams to view an amount different than 5.",
 					"inline": false
 				},
 				{
@@ -133,12 +128,12 @@ function showCommands (givenMessage){
 				},
 				{
 					"name": "Teams confirm {team name}",
-					"value": "Confirm that a game with the listed score occured.",
+					"value": "Confirm that a game with the listed score occurred.",
 					"inline": false
 				},
 				{
 					"name": "Teams deny {team name}",
-					"value": "Deny that a game with the listed score occured.",
+					"value": "Deny that a game with the listed score occurred.",
 					"inline": false
 				}
 			]
