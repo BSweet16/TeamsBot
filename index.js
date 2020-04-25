@@ -23,9 +23,14 @@ var teamNamesList = [];		// A list of all the names of teams
 
 /*	Incoming features
 	- Bigger teams beating smaller teams not worth as many points for win.
+	- Play: 
+		- Add case for tie scores
+		- Add play message sent
+		- Deny a score
 	
 	Extra Incoming features
 	- Create roles of a team
+	- Bet specific amount of points for a match
 	- Allow users to join a team by @ing a user  in the team (just detect the user's team)
 	- Battle history
 	- Cooldown between users making new teams. (Creating channels is intense).
@@ -1314,10 +1319,10 @@ client.on('message', message =>{
 								var thisTeamScore = existingMatch.split(' ')[1].split('-')[1];
 								var otherTeamScore = existingMatch.split(' ')[1].split('-')[0];
 								if (parseInt(thisTeamScore) > parseInt(otherTeamScore)){ // The confirming user won the match
-									fight(userTeam, otherTeam, message);
+									fight(otherTeam, userTeam, message);
 								}
 								else{ // The team sending the request won the match
-									fight(otherTeam, userTeam, message);
+									fight(userTeam, otherTeam, message);
 								}
 							}else{message.channel.send("Unable to find an existing match between your team and the team you have specified.");}
 						} else{message.channel.send("Unable to find the team you have specified.");}
