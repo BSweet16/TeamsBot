@@ -83,7 +83,7 @@ function showCommands (givenMessage){
 				},
 				{
 					"name": "Teams create [team name]",
-					"value": "Create a new team.",
+					"value": "Create a new team. The Team name must be one word.",
 					"inline": false
 				},
 				{
