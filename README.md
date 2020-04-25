@@ -1,17 +1,26 @@
-TopCaliber Ranked Bot
+TopCaliber Teams Bot
 ====================
-This Discord Bot is created in order to maintain a crowd of people all wanting to play together. Due to the nature of the video game, only a certain number of players can play at once, therefore some must wait. This bot manages those people waiting and attempts to streamline them into joining with the group of people already playing once they are ready.<br/><br/>
+This Discord Bot allows for creation of teams between players in a discord server. When a team is created, the team is given a category channel with a default list of channels. The bot keeps track of the members of the team, and uses this information to maintain access to these channels. If all members of a team leave, the channels are deleted.<br/><br/>
 
-Commands:
+Show all commands
+    {} shows a command parameter is optional
+    === Commands List === 
+	teams								Help menu
+	teams create [team name]    					Create a new team
+	teams invite [user]						Add a user to the user's current team
+	teams revoke [user]						Revoke an invite to your current team for user.
+	teams leave							Leave your current team
+	teams join 							Join a team. (requires invite)
+	teams points							Display the user's teams' points
+	teams points {team name}					Check the points of a specific team
+	teams top {number of teams} 					Check the top teams with their points
+	teams roster {team name}					List the players on a given roster
+	teams play teamName [user's team]-[other team]			Send a message for confirmation to the other team.
+	teams confirm teamName						Confirm that a game with the listed score occured.
+	teams deny teamName						Deny that a game with the listed score occured.
+	teams pending {games}						View all pending match results with other teams.
 
-* +me 			- Add yourself to the queue.
-* -me 			- Remove yourself from the queue.
-* -remove {user}	- Removes 'user' from the queue.
-* -next			- Removes first user and announces its their turn
-* -clear or ?view	- Clears the current queue
-* ?list or ?view	- Displays the current queue.
-
-The bot will remove the commands, if typed correctly, in order to prevent spam. Also to reduce spam, the bot will show the current ranked queue after each command typed, but will then be automatically removed after 5 minutes.
+The bot will remove its output from its commands, if typed correctly, in order to prevent spam. Also to reduce spam, the bot will show the current ranked queue after each command typed, but will then be automatically removed after 5 minutes.
 
 
 Control of the bot
@@ -37,7 +46,7 @@ How to get a token: https://www.writebots.com/discord-bot-token/
 
 ```json
 {
-	"prefix": "+",
+	"prefix": "TEAMS",
 	"token": "token"
 }
 ```
