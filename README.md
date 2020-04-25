@@ -5,20 +5,20 @@ This Discord Bot allows for creation of teams between players in a discord serve
 Show all commands<br/>
     {} shows a command parameter is optional<br/>
     === Commands List === <br/>
-	teams								&nbsp&nbspHelp menu<br/>
-	teams create [team name]    					&nbsp&nbsp&nbspCreate a new team<br/>
-	teams invite [user]						Add a user to the user's current team<br/>
-	teams revoke [user]						Revoke an invite to your current team for user.<br/>
-	teams leave							Leave your current team.<br/>
-	teams join 							Join a team. (requires invite)<br/>
-	teams points							Display the user's teams' points.<br/>
-	teams points {team name}					Check the points of a specific team.<br/>
-	teams top {number of teams} 					Check the top teams with their points.<br/>
-	teams roster {team name}					List the players on a given roster.<br/>
-	teams play teamName [user's team]-[other team]			Send a message for confirmation to the other team.<br/>
-	teams confirm teamName						Confirm that a game with the listed score occured.<br/>
-	teams deny teamName						Deny that a game with the listed score occured.<br/>
-	teams pending {games}						View all pending match results with other teams.<br/>
+        teams								* Help menu<br/>
+	teams create [team name]    					* Create a new team<br/>
+	teams invite [user]						* Add a user to the user's current team<br/>
+	teams revoke [user]						* Revoke an invite to your current team for user.<br/>
+	teams leave							* Leave your current team.<br/>
+	teams join 							* Join a team. (requires invite)<br/>
+	teams points							* Display the user's teams' points.<br/>
+	teams points {team name}					* Check the points of a specific team.<br/>
+	teams top {number of teams} 					* Check the top teams with their points.<br/>
+	teams roster {team name}					* List the players on a given roster.<br/>
+	teams play teamName [user's team]-[other team]			* Send a message for confirmation to the other team.<br/>
+	teams confirm teamName						* Confirm that a game with the listed score occured.<br/>
+	teams deny teamName						* Deny that a game with the listed score occured.<br/>
+	teams pending {games}						* View all pending match results with other teams.<br/>
 
 The bot will remove its output from its commands, if typed correctly, in order to prevent spam. Also to reduce spam, the bot will show the current ranked queue after each command typed, but will then be automatically removed after 5 minutes.<br/><br/>
 
