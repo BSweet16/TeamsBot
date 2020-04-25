@@ -1295,6 +1295,9 @@ client.on('message', message =>{
 										currUser.send(embeddedMessage);
 									}
 								})
+
+								// Send success message to the user
+								message.channel.send("Match sent to other team captain for approval.");
 							}else{message.channel.send("[score] must be listed as [Your Team Score]-[Other Team Score] without the []s.");}
 						}else{message.channel.send("Your team already has a match against " + existingMatch.split(' ')[0].slice(1) + "(" + existingMatch.split(' ')[1] + ") that you must confirm or deny before creating this one. \nIf this is an error, please contact an Admin.");}
 					}else{message.channel.send("Unable to find the team you claim to have beaten.");}
