@@ -1,0 +1,9 @@
+data/
+console_error.txt
+console_output.txt
+package-lock.json
+package.json
+config.json
+.vs/*
+.vscode/*
+node_modules/*
