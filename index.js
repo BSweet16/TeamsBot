@@ -1309,7 +1309,7 @@ client.on('message', message =>{
 					// Trade points between the two teams.
 					if (userTeam.length > 0){ // Case: User claiming to win, is in a team
 						if (otherTeam.length > 0){ // Case: Other team exists
-							var existingMatch = findExistingMatch(teamName);
+							var existingMatch = findExistingMatch(otherTeam);
 							if (existingMatch){
 								var thisTeamScore = existingMatch.split(' ')[1].split('-')[1];
 								var otherTeamScore = existingMatch.split(' ')[1].split('-')[0];
