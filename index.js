@@ -22,7 +22,6 @@ var teamsMatchesData; 	// Match results awaiting pending
 var teamNamesList = [];		// A list of all the names of teams
 
 /*	Incoming features
-	- Battle messages not writing to file.
 	- Bigger teams beating smaller teams not worth as many points for win.
 	
 	Extra Incoming features
