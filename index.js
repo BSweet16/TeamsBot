@@ -24,7 +24,6 @@ var teamNamesList = [];		// A list of all the names of teams
 /*	Incoming features
 	- Bigger teams beating smaller teams not worth as many points for win.
 	- Play: 
-		- Deny a score
 		- Dont allow play when one of the teams has 0 points.
 		- Test removeMatch() with multiple pending matches.
 	- Issue viewing points for team that doesnt exist.
@@ -1375,6 +1374,9 @@ client.on('message', message =>{
 									fight(otherTeam, userTeam, message);
 								}
 								removeMatch(otherTeam, userTeam); // Erase match from file
+
+								// Message the team captains about the points score
+								// @TODO (With embedded Message)
 							}else{message.channel.send("Unable to find an existing match between your team and the team you have specified.");}
 						} else{message.channel.send("Unable to find the team you have specified.");}
 					} else{message.channel.send("You are not in a team.");}
@@ -1398,22 +1400,33 @@ client.on('message', message =>{
 								removeMatch(otherTeam, userTeam);
 
 								// Message the other team captain about the denial of the match
-								// @TODO
+								// @TODO (With embedded message)
 							}else{message.channel.send("Unable to find an existing match between your team and the team you have specified.");}
 						} else{message.channel.send("Unable to find the team you have specified.");}
 					} else{message.channel.send("You are not in a team.");}
 				}else{message.channel.send("Unable to find team: " + messageArray[2]);}
 			} else{message.channel.send("*Teams deny [team name]*\t\t - \t\tDeny a match result between two teams.");}
-			// @TODO - Case: User has the role to confirm
+			// @TODO - Case: User has the role to deny
 		}
 		// View anything pending
 		else if (messageArrayUpper[1] == "PENDING"){
-
+			if (messageArray.length == 2){ // Show all pending items
+				// @TODO
+			}
+			else if (messageArray.length == 3){ // Specific commands
+				if (messageArrayUpper[2] == "GAMES" || messageArrayUpper[2] == "MATCHES"){ // Pending commands
+					// @TODO
+				}
+				else if (messageArrayUpper[2] == "INVITES"){
+					// @TODO
+				}
+				else{message.channel.send("Pending items to view:\n-Games\n-Invites");}
+			}else{message.channel.send("*Teams pending {Pending item to view}*\t\t - \t\tView pending games, invites, and other items if applicable.");}
 		}
 		// Unknown command
 		else{
 			message.channel.send("Command not found. Try command \"**teams**\" to list available commands.");
-		}
+		} 
 		message.delete(); // Clean chat history
 	}
 	
