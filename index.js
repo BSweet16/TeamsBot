@@ -685,6 +685,37 @@ function getCaptain(teamName){
 	}
 	return "";
 }
+/** Remove a match from a team.
+ * @param sendingTeam - The name of the team who sent the invite
+ * @param receivingTeam - The name of the team who received the invite from the sending team.
+ */
+function removeMatch(sendingTeam, receivingTeam){
+	var matchArray = teamsMatchesData.split('\n');
+
+	// Search through team roster data to find team name
+	for (var teamPos = 0; teamPos < matchArray.length; teamPos++){
+		if (matchArray[teamPos][0] != '-'){ // Search per team
+			if (matchArray[teamPos].toUpperCase() == sendingTeam.toUpperCase()){ // Team is found
+				var playerPos = teamPos + 1;
+				// Remove Match from the list
+				while ((playerPos < matchArray.length) && (matchArray[playerPos].startsWith('-'))){ // Evaluate each team they sent a match to
+					if (matchArray[playerPos].startsWith('-' + receivingTeam)){
+						matchArray.splice(playerPos, 1);
+					}
+					playerPos++;
+				}
+				// Remove the team from the array if only one match
+				var onlyMatch = playerPos == teamPos + 2;
+				var atLastElement = (playerPos == matchArray.length-1);
+				if (atLastElement || onlyMatch){
+					matchArray.splice(teamPos, 1); 
+				}
+			}
+		}
+	}
+	// Combine back into data
+	teamsMatchesData = matchArray.join('\n');
+}
 
 client.login(token);
 client.once('ready', () =>{
@@ -1336,12 +1367,40 @@ client.on('message', message =>{
 								else{ // The team sending the request won the match
 									fight(userTeam, otherTeam, message);
 								}
+								removeMatch(otherTeam, userTeam); // Erase match from file
 							}else{message.channel.send("Unable to find an existing match between your team and the team you have specified.");}
 						} else{message.channel.send("Unable to find the team you have specified.");}
 					} else{message.channel.send("You are not in a team.");}
 				}
 			} else{message.channel.send("*Teams confirm [team name]*\t\t - \t\tTrade points with a team you have played.");}
 			// @TODO - Case: User has the role to confirm
+		}
+		// Deny match result with a team
+		else if (messageArrayUpper[1] == "DENY"){
+			if (messageArray.length == 3){
+				// Verify both teams exist, and user is in the winning team.
+				var userTeam = findUserTeam(message.author.tag);// Case: User is in a team
+				var otherTeam = teamExistsForFight(messageArrayUpper[2]);
+				if (otherTeam == ""){
+					message.channel.send("Unable to find team: " + messageArray[2]);
+				}
+				else{
+					// Trade points between the two teams.
+					if (userTeam.length > 0){ // Case: User claiming to win, is in a team
+						if (otherTeam.length > 0){ // Case: Other team exists
+							var existingMatch = findExistingMatch(otherTeam);
+							if (existingMatch){
+								removeMatch(userTeam, otherTeam);
+							}else{message.channel.send("Unable to find an existing match between your team and the team you have specified.");}
+						} else{message.channel.send("Unable to find the team you have specified.");}
+					} else{message.channel.send("You are not in a team.");}
+				}
+			} else{message.channel.send("*Teams deny [team name]*\t\t - \t\tDeny a match result between two teams.");}
+			// @TODO - Case: User has the role to confirm
+		}
+		// View anything pending
+		else if (messageArrayUpper[1] == "PENDING"){
+
 		}
 		// Unknown command
 		else{
