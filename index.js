@@ -25,6 +25,8 @@ var teamNamesList = [];		// A list of all the names of teams
 	- Bigger teams beating smaller teams not worth as many points for win.
 	- Play: 
 		- Deny a score
+		- Dont allow play when one of the teams has 0 points.
+		- Test removeMatch() with multiple pending matches.
 	- Issue viewing points for team that doesnt exist.
 		- Make points embed message
 	
@@ -364,11 +366,12 @@ function exchangePoints(winningTeamPoints, losingTeamPoints){
 	}
 
 	// Catch difference not set
-	if (difference = 0){
+	if (difference == 0){
 		console.log("exchangePoints error: Unable to calculate difference between teams.");
 	}
-
-	return Math.floor(difference);
+	
+	difference = Math.floor(difference);
+	return difference;
 }
 /** Temporary solution to the bug causing random space to be at the beginning of the file and between teams
  */
@@ -713,8 +716,12 @@ function removeMatch(sendingTeam, receivingTeam){
 			}
 		}
 	}
-	// Combine back into data
+	// Combine back into data and write to file
 	teamsMatchesData = matchArray.join('\n');
+	fs.writeFileSync(teamsMatchesFile, teamsMatchesData, (err) => { 
+		if (err) throw err; 
+	})
+
 }
 
 client.login(token);
@@ -1358,14 +1365,14 @@ client.on('message', message =>{
 					if (userTeam.length > 0){ // Case: User claiming to win, is in a team
 						if (otherTeam.length > 0){ // Case: Other team exists
 							var existingMatch = findExistingMatch(otherTeam);
-							if (existingMatch){
+							if (existingMatch.length > 0){
 								var thisTeamScore = existingMatch.split(' ')[1].split('-')[1];
 								var otherTeamScore = existingMatch.split(' ')[1].split('-')[0];
 								if (parseInt(thisTeamScore) > parseInt(otherTeamScore)){ // The confirming user won the match
-									fight(otherTeam, userTeam, message);
+									fight(userTeam, otherTeam, message);
 								}
 								else{ // The team sending the request won the match
-									fight(userTeam, otherTeam, message);
+									fight(otherTeam, userTeam, message);
 								}
 								removeMatch(otherTeam, userTeam); // Erase match from file
 							}else{message.channel.send("Unable to find an existing match between your team and the team you have specified.");}
@@ -1381,20 +1388,21 @@ client.on('message', message =>{
 				// Verify both teams exist, and user is in the winning team.
 				var userTeam = findUserTeam(message.author.tag);// Case: User is in a team
 				var otherTeam = teamExistsForFight(messageArrayUpper[2]);
-				if (otherTeam == ""){
-					message.channel.send("Unable to find team: " + messageArray[2]);
-				}
-				else{
+				if (otherTeam != ""){ // Case: Other team exists
 					// Trade points between the two teams.
 					if (userTeam.length > 0){ // Case: User claiming to win, is in a team
 						if (otherTeam.length > 0){ // Case: Other team exists
 							var existingMatch = findExistingMatch(otherTeam);
 							if (existingMatch){
-								removeMatch(userTeam, otherTeam);
+								// Remove the match
+								removeMatch(otherTeam, userTeam);
+
+								// Message the other team captain about the denial of the match
+								// @TODO
 							}else{message.channel.send("Unable to find an existing match between your team and the team you have specified.");}
 						} else{message.channel.send("Unable to find the team you have specified.");}
 					} else{message.channel.send("You are not in a team.");}
-				}
+				}else{message.channel.send("Unable to find team: " + messageArray[2]);}
 			} else{message.channel.send("*Teams deny [team name]*\t\t - \t\tDeny a match result between two teams.");}
 			// @TODO - Case: User has the role to confirm
 		}
