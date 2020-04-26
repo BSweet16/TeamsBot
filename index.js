@@ -24,10 +24,12 @@ var teamNamesList = [];		// A list of all the names of teams
 /*	Incoming features
 	- Bigger teams beating smaller teams not worth as many points for win.
 	- Play: 
+		- Prevent negative scores
 		- Add case for tie scores
 		- Add play message sent
 		- Deny a score
 	- Issue viewing points for team that doesnt exist.
+		- Make points embed message
 	
 	Extra Incoming features
 	- Create roles of a team
@@ -349,18 +351,26 @@ function setPoints(teamName, points){
 }
 /** Calculates the number of points to add abd subtract from each team's point total.
  * @param winningTeamPoints - The number of points the winning team has before the exchange.
- * @param loosingTeamPoints - The number of points the loosing team has before the exchange.
+ * @param losingTeamPoints - The number of points the losing team has before the exchange.
  */
-function exchangePoints(winningTeamPoints, loosingTeamPoints){
-	// if (winningTeamPoints > loosingTeamPoints){ // The team that was intended to win, won
+function exchangePoints(winningTeamPoints, losingTeamPoints){
+	var difference = 0;
+	var isSignificant = (winningTeamPoints + losingTeamPoints)/4 > winningTeamPoints ? true : false;
+	if (winningTeamPoints > losingTeamPoints){ // The team that was intended to win, won
+		difference = isSignificant ? (winningTeamPoints + losingTeamPoints)/32 : (winningTeamPoints + losingTeamPoints)/16;
+	}
+	else if (winningTeamPoints < losingTeamPoints){ // The underdog won
+		difference = isSignificant ? (winningTeamPoints + losingTeamPoints)/4 : (winningTeamPoints + losingTeamPoints)/8;
+	}
+	else{ // They must be the same
+		difference = (winningTeamPoints + losingTeamPoints)/12;
+	}
 
-	// }
-	// else if (winningTeamPoints < loosingTeamPoints){ // The underdog won
+	if (difference = 0){
+		console.log("exchangePoints error: Unable to calculate difference between teams.");
+	}
 
-	// }
-	// else{ // They must be the same
-		return (winningTeamPoints + loosingTeamPoints)/4;
-	// }
+	return Math.floor(difference);
 }
 /** Temporary solution to the bug causing random space to be at the beginning of the file and between teams
  */
@@ -612,21 +622,21 @@ function deleteTeamChannels(givenMessageObject, teamName){
 }
 /** Exchange points between two teams during a fight. 
  */
-function fight(winningTeamName, loosingTeamName, messageObject){
+function fight(winningTeamName, losingTeamName, messageObject){
 	var winningTeamPoints = parseInt(getPoints(winningTeamName));
-	var loosingTeamPoints = parseInt(getPoints(loosingTeamName));
-	var battleDifference = exchangePoints(winningTeamPoints, loosingTeamPoints);
+	var losingTeamPoints = parseInt(getPoints(losingTeamName));
+	var battleDifference = exchangePoints(winningTeamPoints, losingTeamPoints);
 
 	// Exchange points between players
-	winningTeamPoints = winningTeamPoints + battleDifference;
-	loosingTeamPoints = loosingTeamPoints - battleDifference;
+	winningTeamPoints = (winningTeamPoints + battleDifference) >= 0 ? winningTeamPoints + battleDifference : 0;
+	losingTeamPoints = (losingTeamPoints - battleDifference) >= 0 ? losingTeamPoints + battleDifference : 0;
 
 	// Write new points for teams to file
 	setPoints(winningTeamName, String(winningTeamPoints));
-	setPoints(loosingTeamName, String(loosingTeamPoints));
+	setPoints(losingTeamName, String(losingTeamPoints));
 
 	// Send success message 
-	messageObject.channel.send("**" + winningTeamName + "** defeated **" + loosingTeamName + "** for " + battleDifference + " points!");
+	messageObject.channel.send("**" + winningTeamName + "** defeated **" + losingTeamName + "** for " + battleDifference + " points!");
 
 }
 /** Find the index of the teamToFind in the list of points
