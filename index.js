@@ -24,9 +24,6 @@ var teamNamesList = [];		// A list of all the names of teams
 /*	Incoming features
 	- Bigger teams beating smaller teams not worth as many points for win.
 	- Play: 
-		- Prevent negative scores
-		- Add case for tie scores
-		- Add play message sent
 		- Deny a score
 	- Issue viewing points for team that doesnt exist.
 		- Make points embed message
@@ -366,6 +363,7 @@ function exchangePoints(winningTeamPoints, losingTeamPoints){
 		difference = (winningTeamPoints + losingTeamPoints)/12;
 	}
 
+	// Catch difference not set
 	if (difference = 0){
 		console.log("exchangePoints error: Unable to calculate difference between teams.");
 	}
