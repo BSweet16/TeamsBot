@@ -42,11 +42,21 @@ Installation
 This bot uses DiscordAPI v12.<br/>
 How to get a token: https://www.writebots.com/discord-bot-token/<br/>
 
-*If you're using this bot on your own, you will need to setup your own config.json in this format:*
+*If you're using this bot on your own, you will need the following.<br/><br/>
 
+config.json in this format:*<br/>
 ```json
 {
 	"prefix": "TEAMS",
 	"token": "token"
 }
-```
+```<br/>
+A data folder in the root directory to contain all the teams information in this format:*<br/>
+```{
+- data
+	- team-invites.txt
+	- team-matches.txt
+	- team-points.txt
+	- team-roster.txt
+	- teams.txt
+}```<br/>
