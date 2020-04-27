@@ -53,9 +53,9 @@ config.json in this format:*<br/>
 ```
 <br/>
 A data folder in the root directory to contain all the teams information in this format:*<br/>
-*data
-	** team-invites.txt
-	** team-matches.txt
-	** team-points.txt
-	** team-roster.txt
-	** teams.txt
+-data<br/>
+    - team-invites.txt<br/>
+    - team-matches.txt<br/>
+    - team-points.txt<br/>
+    - team-roster.txt<br/>
+    - teams.txt<br/>
