@@ -39,7 +39,7 @@ node index.js - Start locally<br/>
 
 Installation
 ====================
-This bot uses DiscordAPI v12.
+This bot uses DiscordAPI v12.<br/>
 How to get a token: https://www.writebots.com/discord-bot-token/<br/>
 
 *If you're using this bot on your own, you will need to setup your own config.json in this format:*
