@@ -42,9 +42,9 @@ Installation
 This bot uses DiscordAPI v12.<br/>
 How to get a token: https://www.writebots.com/discord-bot-token/<br/>
 
-*If you're using this bot on your own, you will need the following.<br/><br/>
+*If you're using this bot on your own, you will need the following.*<br/><br/>
 
-config.json in this format:*<br/>
+__config.json__ in this format:<br/>
 ```json
 {
 	"prefix": "TEAMS",
@@ -52,7 +52,7 @@ config.json in this format:*<br/>
 }
 ```
 <br/>
-A folder named "data" in the root directory to contain all the teams information with the following names:*<br/>
+A folder named "__data__" in the root directory to contain all the teams information with the following names:<br/>
 - team-invites.txt<br/>
 - team-matches.txt<br/>
 - team-points.txt<br/>
