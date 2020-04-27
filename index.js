@@ -66,7 +66,7 @@ var teamNamesList = [];		// A list of all the names of teams
 	teams play teamName [user's team]-[other team]	Send a message for confirmation to the other team.
 	teams confirm teamName							Confirm that a game with the listed score occured.
 	teams deny teamName								Deny that a game with the listed score occured.
-	teams pending [games]
+	teams pending {games}/{invites}
 */
 function showCommands (givenMessage){
 	var helpMenu = {
@@ -141,7 +141,7 @@ function showCommands (givenMessage){
 					"inline": false
 				},
 				{
-					"name": "Teams pending {games}",
+					"name": "Teams pending {games}/{invites}",
 					"value": "View pending items for a team. View all by specifying nothing, or specify \"games\" or \"invites\".",
 					"inline": false
 				}
