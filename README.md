@@ -51,8 +51,8 @@ __config.json__ in this format:<br/>
 	"token": "token"
 }
 ```
-<br/>
-A folder named *data* in the root directory to contain all the teams information with the following names:<br/>
+
+A folder named **data** in the root directory to contain all the teams information with the following names:<br/>
 - team-invites.txt<br/>
 - team-matches.txt<br/>
 - team-points.txt<br/>
