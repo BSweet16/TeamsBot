@@ -50,7 +50,8 @@ config.json in this format:*<br/>
 	"prefix": "TEAMS",
 	"token": "token"
 }
-```<br/>
+```
+<br/>
 A data folder in the root directory to contain all the teams information in this format:*<br/>
 ```
 {
@@ -61,4 +62,4 @@ A data folder in the root directory to contain all the teams information in this
 	- team-roster.txt
 	- teams.txt
 }
-```<br/>
+```
