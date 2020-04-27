@@ -19,7 +19,7 @@ teams roster {team name}					List the players on a given roster.
 teams play teamName [user's team]-[other team]			Send a message for confirmation to the other team.
 teams confirm teamName						Confirm that a game with the listed score occured.
 teams deny teamName						Deny that a game with the listed score occured.
-teams pending {games}						View all pending match results with other teams.
+teams pending {games}/{invites}					View all pending match results with other teams.
 ```
 The bot will remove its output from its commands, if typed correctly, in order to prevent spam. Also to reduce spam, the bot will show the current ranked queue after each command typed, but will then be automatically removed after 5 minutes.<br/><br/>
 
