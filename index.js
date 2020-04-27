@@ -22,11 +22,6 @@ var teamsMatchesData; 	// Match results awaiting pending
 var teamNamesList = [];		// A list of all the names of teams
 
 /*	Incoming features
-	- Play: 
-		- Test removeMatch() with multiple pending matches.
-	- Issue viewing points for team that doesnt exist.
-	
-	Extra Incoming features
 	- Create roles of a team
 	- Get proper team name for match confirmation messages
 	- Bet specific amount of points for a match
