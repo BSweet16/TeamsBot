@@ -44,7 +44,7 @@ Installation
 This bot uses DiscordAPI v12.<br/>
 How to get a token: https://www.writebots.com/discord-bot-token/<br/>
 
-_If you're using this bot on your own, you will need the following._<br/>
+__If you're using this bot on your own, you will need the following.__<br/>
 __config.json__ in this format:<br/>
 ```json
 {
