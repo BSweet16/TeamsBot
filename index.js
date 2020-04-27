@@ -22,12 +22,9 @@ var teamsMatchesData; 	// Match results awaiting pending
 var teamNamesList = [];		// A list of all the names of teams
 
 /*	Incoming features
-	- Bigger teams beating smaller teams not worth as many points for win.
 	- Play: 
-		- Dont allow play when one of the teams has 0 points.
 		- Test removeMatch() with multiple pending matches.
 	- Issue viewing points for team that doesnt exist.
-		- Make points embed message
 	
 	Extra Incoming features
 	- Create roles of a team
@@ -141,6 +138,11 @@ function showCommands (givenMessage){
 				{
 					"name": "Teams deny {team name}",
 					"value": "Deny that a game with the listed score occurred.",
+					"inline": false
+				},
+				{
+					"name": "Teams pending {games}",
+					"value": "View pending items for a team. View all by specifying nothing, or specify \"games\" or \"invites\".",
 					"inline": false
 				}
 			]
@@ -329,7 +331,7 @@ function getPoints(teamName){
 			return teamPoints;
 		}
 	}
-	return -1;
+	return "-1";
 }
 /** Set the number of points a team should have.
  */
@@ -726,6 +728,53 @@ function removeMatch(sendingTeam, receivingTeam){
 	})
 
 }
+/** Find all the matches a team has.
+ * @param teamName - The name of the team to show the matches for.
+ */
+function getMatches(teamName){
+	var matchArray = teamsMatchesData.split('\n');
+	var foundMatches = [];
+
+	// Search through team match data to find team name
+	for (var teamPos = 0; teamPos < matchArray.length; teamPos++){
+		if (matchArray[teamPos][0] != '-'){ // Search per team
+			if (matchArray[teamPos].toUpperCase() == teamName.toUpperCase()){ // Team is found
+				var playerPos = teamPos + 1;
+				// Add Match to the final list to display
+				while ((playerPos < matchArray.length) && (matchArray[playerPos].startsWith('-'))){ // Evaluate each team they sent a match to
+					if (matchArray[playerPos].startsWith('-')){
+						foundMatches.push(matchArray[playerPos]);
+					}
+					playerPos++;
+				}
+			}
+		}
+	}
+	return foundMatches;
+}
+/** Find all the invites a team has.
+ */
+function getInvites(teamName){
+	var inviteArray = teamsInvitesData.split('\n');
+	var foundInvites = [];
+
+	// Search team invite data to find team name
+	for (var teamPos = 0; teamPos < inviteArray.length; teamPos++){
+		if (inviteArray[teamPos][0] != '-'){ // Search per team
+			if (inviteArray[teamPos].toUpperCase() == teamName.toUpperCase()){ // Team is found
+				var playerPos = teamPos + 1;
+				// Add invite to the final list to display
+				while ((playerPos < inviteArray.length) && (inviteArray[playerPos].startsWith('-'))){ // Evaluate each team they sent an invite to
+					if (inviteArray[playerPos].startsWith('-')){
+						foundInvites.push(inviteArray[playerPos]);
+					}
+					playerPos++;
+				}
+			}
+		}
+	}
+	return foundInvites;
+}
 
 client.login(token);
 client.once('ready', () =>{
@@ -952,8 +1001,8 @@ client.on('message', message =>{
 					var teamPoints = getPoints(userTeam);
 					var embeddedMessage = {
 						"embed": {
-							"title": `${userTeam} Points`,
-							"description": `**${teamPoints}**`,
+							"title": `${userTeam}`,
+							"description": `**${teamPoints}** Points`,
 							"color": 160860
 						}
 					};
@@ -965,14 +1014,16 @@ client.on('message', message =>{
 			}
 			else if (messageArray.length == 3){
 				var teamPoints = getPoints(messageArray[2]);
-				var embeddedMessage = {
-						"embed": {
-							"title": `${messageArray[2]} Points`,
-							"description": `**${teamPoints}**`,
-							"color": 160860
-						}
-					};
-				message.channel.send(embeddedMessage);
+				if (teamPoints >= 0){
+					var embeddedMessage = {
+							"embed": {
+								"title": `${messageArray[2]}`,
+								"description": `**${teamPoints}** Points`,
+								"color": 160860
+							}
+						};
+					message.channel.send(embeddedMessage);
+				}else{message.channel.send("Specified team does not exist.");}
 			}
 			else{
 				message.channel.send("*teams points {team name}*\t\t - \t\tView the points of your current team.\nIf a team name is specified, view the points of the given team.");
@@ -1321,49 +1372,60 @@ client.on('message', message =>{
 				if (userTeam.length > 0){ // Case: User is in a team.
 					var otherTeam = teamExistsForFight(messageArray[2]);
 					if (otherTeam.length > 0){ // Case: Other team exists.
-						var existingMatch = findExistingMatch(otherTeam);
+						var existingMatch = findExistingMatch(userTeam);
 						if (!(existingMatch.length > 0)){ // Case: The team does not currently already have a match pending.
 							if (messageArray[3] && messageArray[3].includes('-')){ // Case: Score includes -
 								// Get the apparent scores of the teams
 								var userTeamScore = messageArray[3].split('-')[0];
 								var otherTeamScore = messageArray[3].split('-')[1];
-
-								// Update teamsMatchesData and write team match to file
-								var matchString = (userTeam + "\n-" + otherTeam + " " + userTeamScore + "-" + otherTeamScore);
-								if (teamsMatchesData){
-									teamsMatchesData += ('\n' + matchString);
-								}
-								else{
-									teamsMatchesData = matchString;
-								}
-								fs.writeFileSync(teamsMatchesFile, teamsMatchesData, (err) => { 
-									if (err) throw err; 
-								})
-
-								// Message the captain of the other team about the match
-								var otherTeamCaptainTag = getCaptain(otherTeam);
-								message.guild.members.cache.forEach(currUser => {
-									if (currUser.user.tag == otherTeamCaptainTag){
-										// Build embed message to send
-										var embeddedMessage = {
-											"embed": {
-											  "title": otherTeam + " vs " + userTeam,
-											  "description": `[${otherTeam}](https://discordapp.com): ${otherTeamScore}\n[${userTeam}](https://discordapp.com): ${userTeamScore}\n${message.author.username} has finalized a match between your teams with the following score. Please confirm or deny the result. Type \"Teams\" in a server chat to view the available commands.`,
-											  "color": 160860,
-											  "timestamp": message.createdTimestamp,
-											  "thumbnail": {
-												"url": message.author.avatarURL({format: 'png', size: 1024})
-											  }
-											}
-										  }
-										currUser.send(embeddedMessage);
+								if (getPoints(otherTeam) != "0" && getPoints(userTeam) != "0"){ // Case one of the teams has 0 points
+									// Update teamsMatchesData and write team match to file
+									var matchString = (userTeam + "\n-" + otherTeam + " " + userTeamScore + "-" + otherTeamScore);
+									if (teamsMatchesData){
+										teamsMatchesData += ('\n' + matchString);
 									}
-								})
+									else{
+										teamsMatchesData = matchString;
+									}
+									fs.writeFileSync(teamsMatchesFile, teamsMatchesData, (err) => { 
+										if (err) throw err; 
+									})
 
-								// Send success message to the user
-								message.channel.send("Match sent to other team captain for approval.");
+									// Message the captain of the other team about the match
+									var otherTeamCaptainTag = getCaptain(otherTeam);
+									message.guild.members.cache.forEach(currUser => {
+										if (currUser.user.tag == otherTeamCaptainTag){
+											// Build embed message to send
+											var embeddedMessage = {
+												"embed": {
+												"title": otherTeam + " vs " + userTeam,
+												"description": `**${otherTeam}**: ${otherTeamScore}\n**${userTeam}**: ${userTeamScore}\n${message.author.username} has finalized a match between your teams with the following score. Please confirm or deny the result. Type \"Teams\" in a server chat to view the available commands.`,
+												"color": 160860,
+												"timestamp": message.createdTimestamp,
+												"thumbnail": {
+													"url": message.author.avatarURL({format: 'png', size: 1024})
+												}
+												}
+											}
+											currUser.send(embeddedMessage);
+										}
+									})
+									// Send success message to the user
+									var successMessage = {
+										"embed": {
+										"title": "Match Sent",
+										"description": `Waiting for **${otherTeam}** approval.`,
+										"color": 160860,
+										"timestamp": message.createdTimestamp,
+										"thumbnail": {
+											"url": message.author.avatarURL({format: 'png', size: 1024})
+										}
+										}
+									}
+									message.channel.send(successMessage);
+								}else{message.channel.send("One of the teams has 0 points, which is not allowed for matches.");}
 							}else{message.channel.send("[score] must be listed as [Your Team Score]-[Other Team Score] without the []s.");}
-						}else{message.channel.send("Your team already has a match against " + existingMatch.split(' ')[0].slice(1) + "(" + existingMatch.split(' ')[1] + ") that you must confirm or deny before creating this one. \nIf this is an error, please contact an Admin.");}
+						}else{message.channel.send("Your team already has a match against **" + existingMatch.split(' ')[0].slice(1) + "** (" + existingMatch.split(' ')[1] + ") that you must confirm or deny before creating this one. \nIf this is an error, please contact an Admin.");}
 					}else{message.channel.send("Unable to find the team you claim to have beaten.");}
 				}else{message.channel.send("You must be in a team to register a win against another team.");}
 			}else{message.channel.send("*Teams play [team name] [score]*\t\t - \t\tTrade points with a team you have defeated. **[score] must be listed as [Your Team Score]-[Other Team Score] without the []s**");}
@@ -1381,65 +1443,67 @@ client.on('message', message =>{
 					// Trade points between the two teams.
 					if (userTeam.length > 0){ // Case: User claiming to win, is in a team
 						if (otherTeam.length > 0){ // Case: Other team exists
-							var existingMatch = findExistingMatch(otherTeam);
-							if (existingMatch.length > 0){
-								var thisTeamScore = existingMatch.split(' ')[1].split('-')[1];
-								var otherTeamScore = existingMatch.split(' ')[1].split('-')[0];
-								var amountExchanged = 0;
-								var embeddedThisTeamMessage;
-								var embeddedOtherTeamMessage;
-								if (parseInt(thisTeamScore) > parseInt(otherTeamScore)){ // The confirming user won the match
-									amountExchanged = fight(userTeam, otherTeam, message);
-								}
-								else if (parseInt(thisTeamScore) < parseInt(otherTeamScore)){ // The team receiving the request won the match
-									amountExchanged = fight(otherTeam, userTeam, message);
-								}
-								else{ // It was a tie
+							if (getPoints(otherTeam) != "0" && getPoints(userTeam) != "0"){ // Case one of the teams has 0 points
+								var existingMatch = findExistingMatch(otherTeam);
+								if (existingMatch.length > 0){
+									var thisTeamScore = existingMatch.split(' ')[1].split('-')[1];
+									var otherTeamScore = existingMatch.split(' ')[1].split('-')[0];
+									var amountExchanged = 0;
+									var embeddedThisTeamMessage;
+									var embeddedOtherTeamMessage;
+									if (parseInt(thisTeamScore) > parseInt(otherTeamScore)){ // The confirming user won the match
+										amountExchanged = fight(userTeam, otherTeam, message);
+									}
+									else if (parseInt(thisTeamScore) < parseInt(otherTeamScore)){ // The team receiving the request won the match
+										amountExchanged = fight(otherTeam, userTeam, message);
+									}
+									else{ // It was a tie
+										embeddedThisTeamMessage = {
+											"embed": {
+												"title": "**Match Accepted**",
+												"description": `Thank you for confirming the match. No change in points took place at this time.** `,
+												"color": 160860
+											}
+										};
+										embeddedOtherTeamMessage = {
+											"embed": {
+												"title": "**Match Accepted**",
+												"description": `**${message.author.tag}** from **${userTeam}** has accepted the result of your match. No change in points took place at this time.** `,
+												"color": 160860
+											}
+										};
+									}
+									// Create default messages to send to captains
 									embeddedThisTeamMessage = {
 										"embed": {
 											"title": "**Match Accepted**",
-											"description": `Thank you for confirming the match. No change in points took place at this time.** `,
+											"description": `Thank you for confirming the match, which resulted in a change of **${amountExchanged} points.**`,
 											"color": 160860
 										}
 									};
 									embeddedOtherTeamMessage = {
 										"embed": {
 											"title": "**Match Accepted**",
-											"description": `**${message.author.tag}** from **${userTeam}** has accepted the result of your match. No change in points took place at this time.** `,
+											"description": `**${message.author.username}** from **${userTeam}** has accepted the result of your match resulting in a change of **${amountExchanged} points.** `,
 											"color": 160860
 										}
 									};
-								}
-								// Create default messages to send to captains
-								embeddedThisTeamMessage = {
-									"embed": {
-										"title": "**Match Accepted**",
-										"description": `Thank you for confirming the match, which resulted in a change of **${amountExchanged} points.**`,
-										"color": 160860
-									}
-								};
-								embeddedOtherTeamMessage = {
-									"embed": {
-										"title": "**Match Accepted**",
-										"description": `**${message.author.username}** from **${userTeam}** has accepted the result of your match resulting in a change of **${amountExchanged} points.** `,
-										"color": 160860
-									}
-								};
-								
-								// Erase match from file
-								removeMatch(otherTeam, userTeam); 
-								
-								// Message the team captains about the points change
-								message.author.send(embeddedThisTeamMessage); // Message this team captain
-								var otherTeamCaptainTag = getCaptain(otherTeam);
-								if (otherTeamCaptainTag != ""){ // Message the other team captain
-									message.guild.members.cache.forEach(userObject => {
-										if (userObject.user.tag == otherTeamCaptainTag){
-											userObject.send(embeddedOtherTeamMessage);
-										}
-									})
-								}else{console.log("DENY: Unable to find other team captain for message.");}
-							}else{message.channel.send("Unable to find an existing match between your team and the team you have specified.");}
+									
+									// Erase match from file
+									removeMatch(otherTeam, userTeam); 
+									
+									// Message the team captains about the points change
+									message.author.send(embeddedThisTeamMessage); // Message this team captain
+									var otherTeamCaptainTag = getCaptain(otherTeam);
+									if (otherTeamCaptainTag != ""){ // Message the other team captain
+										message.guild.members.cache.forEach(userObject => {
+											if (userObject.user.tag == otherTeamCaptainTag){
+												userObject.send(embeddedOtherTeamMessage);
+											}
+										})
+									}else{console.log("DENY: Unable to find other team captain for message.");}
+								}else{message.channel.send("Unable to find an existing match between your team and the team you have specified.");}
+							}else{message.channel.send("One of the teams has 0 points, which is not allowed for matches.\nPlease contact an admin to have this match removed.");}
 						} else{message.channel.send("Unable to find the team you have specified.");}
 					} else{message.channel.send("You are not in a team.");}
 				}
@@ -1496,15 +1560,54 @@ client.on('message', message =>{
 		}
 		// View anything pending
 		else if (messageArrayUpper[1] == "PENDING"){
+			
 			if (messageArray.length == 2){ // Show all pending items
-				// @TODO
+				var userTeam = findUserTeam(message.author.tag);
+
+				// Create strings of current matches and invites
+				var currMatches = getMatches(userTeam);
+				var currInvites = getInvites(userTeam);
+				var currMatchesString = currMatches.length > 0 ? currMatches.join('\n-') : "";
+				var currInvitesString = currInvites.length > 0 ? currInvites.join('\n- ') : "- No pending invites";
+				var embeddedMessage = { // Make embedded message
+					"embed": {
+						"title": `** ${userTeam} Pending Games and Invites**`,
+						"description": `**Matches**\n${currMatchesString} \n\n**Invites**\n ${currInvitesString}`,
+						"color": 160860
+					}
+				};
+				message.channel.send(embeddedMessage);
 			}
 			else if (messageArray.length == 3){ // Specific commands
-				if (messageArrayUpper[2] == "GAMES" || messageArrayUpper[2] == "MATCHES"){ // Pending commands
-					// @TODO
+				if (messageArrayUpper[2] == "GAMES" || messageArrayUpper[2] == "MATCHES"){ // Pending matches
+					var userTeam = findUserTeam(message.author.tag);
+
+					// Create string of current matches
+					var currMatches = getMatches(userTeam);
+					var currMatchesString = currMatches.length > 0 ? currMatches.join('\n-') : "- No pending matches";
+					var embeddedMessage = { // Make embedded message
+						"embed": {
+							"title": `** ${userTeam} Pending Games**`,
+							"description": `${currMatchesString}`,
+							"color": 160860
+						}
+					};
+					message.channel.send(embeddedMessage);
 				}
 				else if (messageArrayUpper[2] == "INVITES"){
-					// @TODO
+					var userTeam = findUserTeam(message.author.tag);
+
+					// Create string of current invites
+					var currInvites = getInvites(userTeam);
+					var currInvitesString = currInvites.length > 0 ? currInvites.join('\n- ') : "- No pending invites";
+					var embeddedMessage = { // Make embedded message
+						"embed": {
+							"title": `** ${userTeam} Pending Invites**`,
+							"description": `${currInvitesString}`,
+							"color": 160860
+						}
+					};
+					message.channel.send(embeddedMessage);
 				}
 				else{message.channel.send("Pending items to view:\n-Games\n-Invites");}
 			}else{message.channel.send("*Teams pending {Pending item to view}*\t\t - \t\tView pending games, invites, and other items if applicable.");}
