@@ -2,7 +2,8 @@ TopCaliber Teams Bot
 ====================
 This Discord Bot allows for creation of teams between players in a discord server. When a team is created, the team is given a category channel with a default list of channels. The bot keeps track of the members of the team, and uses this information to maintain access to these channels. If all members of a team leave, the channels are deleted.<br/><br/>
 
-Show all commands.<br/>
+Commands
+====================
 { } shows a command parameter is optional.<br/>
 ```
 teams								Help menu
