@@ -137,7 +137,7 @@ function showCommands (givenMessage){
 				},
 				{
 					"name": "Teams pending {games}/{invites}",
-					"value": "View pending items for a team. View all by specifying nothing, or specify \"games\" or \"invites\".",
+					"value": "View pending items for a team. View all by specifying nothing, or specify 'games' or 'invites'.",
 					"inline": false
 				}
 			]
@@ -1202,7 +1202,7 @@ client.on('message', message =>{
 
 				// Announce the user to the team
 				if (teamToJoin && message.author.username){
-					message.channel.send("**" + message.author.username + "** has  joined **" + teamToJoin + "**!"); // @TODO Send this message to the team chat when special channels are added
+					message.channel.send("**" + message.author.username + "** has joined **" + teamToJoin + "**!"); // @TODO Send this message to the team chat when special channels are added
 					message.author.send("Welcome to the team! \nYou now have access to the teams' channels in this server.");
 				}
 				else{
