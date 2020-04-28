@@ -1,9 +1,11 @@
 TopCaliber Teams Bot
+![Ranked Bot Logo](https://github.com/BSweet16/TeamsBot/blob/master/TeamsBot.png)
 ====================
 This Discord Bot allows for creation of teams between players in a discord server. When a team is created, the team is given a category channel with a default list of channels. The bot keeps track of the members of the team, and uses this information to maintain access to these channels. If all members of a team leave, the channels are deleted.<br/><br/>
 
-Show all commands.<br/>
-{} shows a command parameter is optional.<br/>
+Commands
+====================
+{ } shows a command parameter is optional.<br/>
 ```
 teams								Help menu
 teams create [team name]    					Create a new team
@@ -18,7 +20,7 @@ teams roster {team name}					List the players on a given roster.
 teams play teamName [user's team]-[other team]			Send a message for confirmation to the other team.
 teams confirm teamName						Confirm that a game with the listed score occured.
 teams deny teamName						Deny that a game with the listed score occured.
-teams pending {games}						View all pending match results with other teams.
+teams pending {games}/{invites}					View all pending match results with other teams.
 ```
 The bot will remove its output from its commands, if typed correctly, in order to prevent spam. Also to reduce spam, the bot will show the current ranked queue after each command typed, but will then be automatically removed after 5 minutes.<br/><br/>
 
@@ -39,14 +41,22 @@ node index.js - Start locally<br/>
 
 Installation
 ====================
-
+This bot uses DiscordAPI v12.<br/>
 How to get a token: https://www.writebots.com/discord-bot-token/<br/>
 
-*If you're using this bot on your own, you will need to setup your own config.json in this format:*
-
+__If you're using this bot on your own, you will need the following.__<br/>
+__config.json__ in this format:<br/>
 ```json
 {
 	"prefix": "TEAMS",
 	"token": "token"
 }
 ```
+
+A "data" folder in the root directory to contain all the teams information with the following names:<br/>
+* data
+  * team-invites.txt<br/>
+  * team-matches.txt<br/>
+  * team-points.txt<br/>
+  * team-roster.txt<br/>
+  * teams.txt<br/>
