@@ -32,11 +32,11 @@ node index.js - Start locally<br/>
 
 - Linux Server 
 	<br/></t>Use the following commands through SSH to start the bot: 
-	<br/></t>Start and persist through SSH: node index.js > console_error.txt > console_output.txt &
-	<br/></t>Look at active background processes: ps -ax | grep node
-	<br/></t>Kill the process running in the background: kill -9 {ProcessNum}
+	<br/></t>**Start and persist through SSH:** node index.js > console_error.txt > console_output.txt &
+	<br/></t>**Look at active background processes:** ps -ax | grep node
+	<br/></t>**Kill the process running in the background:** kill -9 {ProcessNum}
 		<br/></t></t>Obtain the {ProcessNum} after looking at the active background processes.
-	<br/></t>Use "Exit" when finished, before closing console.
+	<br/></t>Use "**Exit**" when finished, before closing console.
 
 
 Installation
